@@ -3,8 +3,12 @@
 
 ;; dev helper
 (defn- r []
-  (load-file "octarine/core.clj")
-  (load-file "octarine/genfile.clj"))
+  (load-file "proto_oct/core.clj")
+  (load-file "proto_oct/genfile.clj"))
+
+;; dev helper
+(defn- q []
+  (System/exit 0))
 
 (defn genfile []
   )
