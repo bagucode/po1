@@ -11,4 +11,6 @@
   (System/exit 0))
 
 (defn genfile []
-  )
+  (apply str (map emit-code
+                  [(include "stdio.h" true)
+                   ])))
