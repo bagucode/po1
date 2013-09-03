@@ -80,14 +80,24 @@
          (emit-code (:then m)) \newline
          "#endif")))
 
-(defn add-expressions* [state & exprs]
+;; TODO: ändra den här. Det är bättre att bara lägga dem i ordning i stället
+;; för i en map.
+(defn add-expressions* [m & exprs]
   (reduce
     (fn [s e]
       (if ((:type e) s)
         (update-in s [(:type e)] conj e)
         (assoc s (:type e) [e])))
-    state
+    m
     exprs))
 
-(defmacro add-expressions [state & exprs]
-  `(add-expressions* ~state ~@exprs))
+(defmacro add-expressions [m & exprs]
+  `(add-expressions* ~m ~@exprs))
+
+(defn emit-program [m]
+  (letfn [(emit [expr] (reduce str (map emit-code expr)))]
+    (let [includes (emit (:include m))
+          defines (emit (:define m))]
+      (apply str includes defines))))
+
+

@@ -10,9 +10,10 @@
 (defn- q []
   (System/exit 0))
 
-
-
 (defn genfile []
-  (apply str (map emit-code
-                  [(include "stdio.h" true)
-                   ])))
+  (poc/emit-program
+    (poc/add-expressions {}
+      (poc/include "Windows.h")
+      (poc/define "WINDOWS"))))
+
+
