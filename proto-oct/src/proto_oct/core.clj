@@ -1,10 +1,17 @@
 (ns proto-oct.core)
 
+(def ^:dynamic *emit-newlines* true)
+
 (defmulti emit-code :type)
 
 ;; Pass-through version of emit-code for literals
 (defmethod emit-code nil [literal]
   literal)
+
+(defmacro defemit [type argvec body]
+  (if *emit-newlines*
+    `(defmethod emit-code ~type ~argvec (str ~body \newline))
+    `(defmethod emit-code ~type ~argvec ~body)))
 
 (defn define
   ([name value]
@@ -14,7 +21,7 @@
   ([name]
      (define name nil)))
 
-(defmethod emit-code :define [m]
+(defemit :define [m]
   (if (:value m)
     (str "#define " (:name m) " " (:value m))
     (str "#define " (:name m))))
@@ -27,7 +34,7 @@
   ([file]
      (include file nil)))
 
-(defmethod emit-code :include [m]
+(defemit :include [m]
   (if (:system m)
     (str "#include <" (:file m) ">")
     (str "#include \"" (:file m) "\"")))
@@ -41,7 +48,7 @@
   ([cond then]
      (ifdef cond then nil)))
 
-(defmethod emit-code :ifdef [m]
+(defemit :ifdef [m]
   (if (:else m)
     (str "#ifdef " (:cond m) \newline
          (emit-code (:then m)) \newline
@@ -62,7 +69,7 @@
   ([cond then]
      (ifndef cond then nil)))
 
-(defmethod emit-code :ifndef [m]
+(defemit :ifndef [m]
   (if (:else m)
     (str "#ifndef " (:cond m) \newline
          (emit-code (:then m)) \newline
