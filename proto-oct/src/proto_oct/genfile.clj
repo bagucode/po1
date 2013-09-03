@@ -1,14 +1,16 @@
 (ns proto-oct.genfile
-  (:use [proto-oct.core]))
+  (:require [proto-oct.core :as poc]))
 
-;; dev helper
+;; c9 dev helper
 (defn- r []
   (load-file "proto_oct/core.clj")
   (load-file "proto_oct/genfile.clj"))
 
-;; dev helper
+;; c9 dev helper
 (defn- q []
   (System/exit 0))
+
+
 
 (defn genfile []
   (apply str (map emit-code

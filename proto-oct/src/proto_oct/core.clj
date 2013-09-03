@@ -79,3 +79,15 @@
     (str "#ifndef " (:cond m) \newline
          (emit-code (:then m)) \newline
          "#endif")))
+
+(defn add-expressions* [state & exprs]
+  (reduce
+    (fn [s e]
+      (if ((:type e) s)
+        (update-in s [(:type e)] conj e)
+        (assoc s (:type e) [e])))
+    state
+    exprs))
+
+(defmacro add-expressions [state & exprs]
+  `(add-expressions* ~state ~@exprs))
