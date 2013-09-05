@@ -13,6 +13,9 @@
     `(defmethod emit-code ~type ~argvec (str ~body \newline))
     `(defmethod emit-code ~type ~argvec ~body)))
 
+(defn- emit-seq [s]
+  (reduce str (map #(emit-code %) s)))
+
 (defn define
   ([name value]
      {:type :define
@@ -51,12 +54,12 @@
 (defemit :ifdef [m]
   (if (:else m)
     (str "#ifdef " (:cond m) \newline
-         (emit-code (:then m)) \newline
+         (emit-seq (:then m)) \newline
          "#else" \newline
-         (emit-code (:else m)) \newline
+         (emit-seq (:else m)) \newline
          "#endif")
     (str "#ifdef " (:cond m) \newline
-         (emit-code (:then m)) \newline
+         (emit-seq (:then m)) \newline
          "#endif")))
 
 ;; copy of ifdef, generalize?
@@ -80,24 +83,21 @@
          (emit-code (:then m)) \newline
          "#endif")))
 
-;; TODO: ändra den här. Det är bättre att bara lägga dem i ordning i stället
-;; för i en map.
-(defn add-expressions* [m & exprs]
-  (reduce
-    (fn [s e]
-      (if ((:type e) s)
-        (update-in s [(:type e)] conj e)
-        (assoc s (:type e) [e])))
-    m
-    exprs))
+(defn typedef [name alias]
+  {:type :typedef
+   :name name
+   :alias alias})
 
-(defmacro add-expressions [m & exprs]
-  `(add-expressions* ~m ~@exprs))
+(defemit :typedef [m]
+  (str "typedef " (:name m) " " (:alias m)))
 
-(defn emit-program [m]
-  (letfn [(emit [expr] (reduce str (map emit-code expr)))]
-    (let [includes (emit (:include m))
-          defines (emit (:define m))]
-      (apply str includes defines))))
+(defn add-expressions* [s & exprs]
+  (reduce conj s exprs))
+
+(defmacro add-expressions [s & exprs]
+  `(add-expressions* ~s ~@exprs))
+
+(defn emit-program [s]
+  (reduce str (map emit-code s)))
 
 
