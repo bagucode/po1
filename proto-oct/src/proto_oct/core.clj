@@ -75,12 +75,12 @@
 (defemit :ifndef [m]
   (if (:else m)
     (str "#ifndef " (:cond m) \newline
-         (emit-code (:then m)) \newline
+         (emit-seq (:then m)) \newline
          "#else" \newline
-         (emit-code (:else m)) \newline
+         (emit-seq (:else m)) \newline
          "#endif")
     (str "#ifndef " (:cond m) \newline
-         (emit-code (:then m)) \newline
+         (emit-seq (:then m)) \newline
          "#endif")))
 
 (defn typedef [name alias]
