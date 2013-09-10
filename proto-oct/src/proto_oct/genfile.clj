@@ -29,4 +29,7 @@
      (poc/typedef "__int64" "I64")
      (poc/typedef "unsigned __int64" "U64")
      (poc/typedef "float" "F32")
-     (poc/typedef "double" "F64")]))
+     (poc/typedef "double" "F64")])
+    (poc/ifdef "__APPLE__"
+      [(poc/define "MACOSX")
+       ()]))
