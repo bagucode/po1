@@ -89,7 +89,7 @@
    :alias alias})
 
 (defemit :typedef [m]
-  (str "typedef " (:name m) " " (:alias m)))
+  (str "typedef " (:name m) " " (:alias m) ";"))
 
 (defn add-expressions* [s & exprs]
   (reduce conj s exprs))
