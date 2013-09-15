@@ -91,6 +91,21 @@
 (defemit :typedef [m]
   (str "typedef " (:name m) " " (:alias m) ";"))
 
+(defn oct-type [name reftype? & members]
+  {:type :oct-type
+   :name name
+   :reftype? reftype?
+   :members members})
+
+(defemit :oct-type [m]
+  (str "typedef struct _" (:name m) " {" \newline
+       (reduce str
+               (map #(str (first %) " " (second %) ";" \newline)
+                    (partition 2 (:members m))))
+       (if (:reftype? m)
+         (str "}* " (:name m) "Ref;" \newline)
+         (str "} " (:name m) ";" \newline))))
+
 (defn add-expressions* [s & exprs]
   (reduce conj s exprs))
 
@@ -99,5 +114,3 @@
 
 (defn emit-program [s]
   (reduce str (map emit-code s)))
-
-
