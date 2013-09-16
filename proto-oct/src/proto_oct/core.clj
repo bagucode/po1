@@ -17,12 +17,15 @@
   (reduce str (map #(emit-code %) s)))
 
 (defn define
-  ([name value]
+  ([name value condition]
      {:type :define
       :name name
-      :value value})
+      :value value
+      :condition condition})
+  ([name value]
+     (define name value nil))
   ([name]
-     (define name nil)))
+     (define name nil nil)))
 
 (defemit :define [m]
   (if (:value m)
@@ -30,12 +33,15 @@
     (str "#define " (:name m))))
 
 (defn include
-  ([file system?]
+  ([file system? condition]
      {:type :include
       :file file
-      :system system?})
+      :system system?
+      :condition condition})
+  ([file system?]
+     (include file system? nil))
   ([file]
-     (include file nil)))
+     (include file false nil)))
 
 (defemit :include [m]
   (if (:system m)
