@@ -17,11 +17,11 @@
   (reduce str (map #(emit-code %) s)))
 
 (defn define
-  ([name value condition]
+  ([name value dependencies]
      {:type :define
       :name name
       :value value
-      :condition condition})
+      :dependencies dependencies})
   ([name value]
      (define name value nil))
   ([name]
@@ -33,11 +33,11 @@
     (str "#define " (:name m))))
 
 (defn include
-  ([file system? condition]
+  ([file system? dependencies]
      {:type :include
       :file file
       :system system?
-      :condition condition})
+      :dependencies dependencies})
   ([file system?]
      (include file system? nil))
   ([file]
@@ -49,11 +49,12 @@
     (str "#include \"" (:file m) "\"")))
 
 (defn ifdef
-  ([cond then else]
+  ([cond then else dependencies]
      {:type :ifdef
       :cond cond
       :then then
-      :else else})
+      :else else
+      :dependencies dependencies})
   ([cond then]
      (ifdef cond then nil)))
 
