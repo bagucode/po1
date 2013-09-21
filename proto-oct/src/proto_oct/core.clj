@@ -55,8 +55,10 @@
       :then then
       :else else
       :dependencies dependencies})
+  ([cond then else]
+     (ifdef cond then else nil))
   ([cond then]
-     (ifdef cond then nil)))
+     (ifdef cond then nil nil)))
 
 (defemit :ifdef [m]
   (if (:else m)
@@ -71,13 +73,16 @@
 
 ;; copy of ifdef, generalize?
 (defn ifndef
-  ([cond then else]
+  ([cond then else dependencies]
      {:type :ifndef
       :cond cond
       :then then
-      :else else})
+      :else else
+      :dependencies dependencies})
+  ([cond then else]
+     (ifndef cond then else nil))
   ([cond then]
-     (ifndef cond then nil)))
+     (ifndef cond then nil nil)))
 
 (defemit :ifndef [m]
   (if (:else m)
