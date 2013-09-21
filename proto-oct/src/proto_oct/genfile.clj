@@ -13,7 +13,7 @@
 (defmacro octarine [& exprs]
   `(println
     (c/emit-program
-     (c/add-expressions [] ~@exprs))))
+     (c/add-expressions {} ~@exprs))))
 
 (octarine
  (c/include "stdio.h" true)

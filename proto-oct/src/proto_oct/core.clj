@@ -119,7 +119,12 @@
          (str "} " (:name m) ";" \newline))))
 
 (defn add-expressions* [s & exprs]
-  (reduce conj s exprs))
+  (letfn [(add-or-update [s expr]
+            (let [t (:type expr)]
+              (if (s t)
+                (update-in s [t] conj expr)
+                (assoc s t #{expr}))))]
+    (reduce add-or-update s exprs)))
 
 (defmacro add-expressions [s & exprs]
   `(add-expressions* ~s ~@exprs))
