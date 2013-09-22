@@ -17,7 +17,7 @@
   (reduce str (map #(emit-code %) s)))
 
 (defn define
-  ([name value dependencies]
+  ([name value & dependencies]
      {:type :define
       :name name
       :value value
@@ -33,7 +33,7 @@
     (str "#define " (:name m))))
 
 (defn include
-  ([file system? dependencies]
+  ([file system? & dependencies]
      {:type :include
       :file file
       :system system?
@@ -49,7 +49,7 @@
     (str "#include \"" (:file m) "\"")))
 
 (defn ifdef
-  ([cond then else dependencies]
+  ([cond then else & dependencies]
      {:type :ifdef
       :cond cond
       :then then
@@ -73,7 +73,7 @@
 
 ;; copy of ifdef, generalize?
 (defn ifndef
-  ([cond then else dependencies]
+  ([cond then else & dependencies]
      {:type :ifndef
       :cond cond
       :then then
@@ -128,6 +128,14 @@
 
 (defmacro add-expressions [s & exprs]
   `(add-expressions* ~s ~@exprs))
+
+(defn find-dependencies [s expr]
+  (let [deps (:dependencies expr)]
+    (println deps)
+    (cond
+     deps (do
+            (println (concat deps (map find-dependencies s deps)))
+            (concat deps (map find-dependencies s deps))))))
 
 (defn emit-program [s]
   (reduce str (map emit-code s)))
