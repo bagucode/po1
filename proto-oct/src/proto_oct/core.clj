@@ -17,15 +17,11 @@
   (reduce str (map #(emit-code %) s)))
 
 (defn define
-  ([name value & dependencies]
-     {:type :define
-      :name name
-      :value value
-      :dependencies dependencies})
-  ([name value]
-     (define name value nil))
-  ([name]
-     (define name nil nil)))
+  [name value & dependencies]
+  {:type :define
+   :name name
+   :value value
+   :dependencies dependencies})
 
 (defemit :define [m]
   (if (:value m)
@@ -33,15 +29,11 @@
     (str "#define " (:name m))))
 
 (defn include
-  ([file system? & dependencies]
-     {:type :include
-      :file file
-      :system system?
-      :dependencies dependencies})
-  ([file system?]
-     (include file system? nil))
-  ([file]
-     (include file false nil)))
+  [file system? & dependencies]
+  {:type :include
+   :file file
+   :system system?
+   :dependencies dependencies})
 
 (defemit :include [m]
   (if (:system m)
@@ -49,16 +41,12 @@
     (str "#include \"" (:file m) "\"")))
 
 (defn ifdef
-  ([cond then else & dependencies]
-     {:type :ifdef
-      :cond cond
-      :then then
-      :else else
-      :dependencies dependencies})
-  ([cond then else]
-     (ifdef cond then else nil))
-  ([cond then]
-     (ifdef cond then nil nil)))
+  [cond then else & dependencies]
+  {:type :ifdef
+   :cond cond
+   :then then
+   :else else
+   :dependencies dependencies})
 
 (defemit :ifdef [m]
   (if (:else m)
@@ -73,16 +61,12 @@
 
 ;; copy of ifdef, generalize?
 (defn ifndef
-  ([cond then else & dependencies]
-     {:type :ifndef
-      :cond cond
-      :then then
-      :else else
-      :dependencies dependencies})
-  ([cond then else]
-     (ifndef cond then else nil))
-  ([cond then]
-     (ifndef cond then nil nil)))
+  [cond then else & dependencies]
+  {:type :ifndef
+   :cond cond
+   :then then
+   :else else
+   :dependencies dependencies})
 
 (defemit :ifndef [m]
   (if (:else m)
@@ -131,10 +115,10 @@
 
 (defn find-dependencies [s expr]
   (let [deps (:dependencies expr)]
-    (println deps)
+    ;;(println deps)
     (cond
      deps (do
-            (println (concat deps (map find-dependencies s deps)))
+            ;;(println (concat deps (map find-dependencies s deps)))
             (concat deps (map find-dependencies s deps))))))
 
 (defn emit-program [s]
