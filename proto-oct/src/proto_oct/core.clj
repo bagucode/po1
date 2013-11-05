@@ -87,10 +87,10 @@
 (defemit :typedef [m]
   (str "typedef " (:name m) " " (:alias m) ";"))
 
-(defn oct-type [name reftype? & members]
+(defn oct-type [name heaptype? & members]
   {:type :oct-type
    :name name
-   :reftype? reftype?
+   :heaptype? heaptype?
    :members members})
 
 (defemit :oct-type [m]
